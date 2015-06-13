@@ -1,6 +1,8 @@
 import gab.opencv.*;
 import processing.video.*;
 import java.awt.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 Capture video;
 OpenCV opencv;
@@ -89,7 +91,7 @@ void setup() {
   opencv = new OpenCV(this, 640, 480);
   opencv.loadCascade("aGest.xml");
   
-  textSize(10);  
+  textSize(9);  
   textAlign(CENTER);
   
   cursorImg = loadImage("cursor.png");
@@ -204,6 +206,25 @@ void createFolder(String folderName) {
   println("Create folder failed!");
 }
 
+String solveName(String originName) {
+  if (originName.indexOf("Copy") < 0)
+    return "Copy of " + originName;
+  else {
+    //Regular Expression
+    String pattern = "\\((\\d+)\\)";
+    Pattern r = Pattern.compile(pattern);
+    Matcher m = r.matcher(originName);
+    if (m.find()) {
+      //println(m.group(1));
+      int index = Integer.parseInt(m.group(1));
+      index++;
+      return m.replaceFirst("("+index+")");
+    } else {
+      return originName + "(2)";
+    }
+  }
+}
+
 void keyPressed() {
   
   //Move
@@ -217,8 +238,11 @@ void keyPressed() {
   
   //Copy
   if (key == 'c') {
-    
-    
+    for (int i = folders.size() - 1; i>=0; i--)
+      if (folders.get(i).overFolder) {
+        String newFolderName = solveName(folders.get(i).folderName);
+        createFolder(newFolderName);
+      }
   }
   
   //Delete
