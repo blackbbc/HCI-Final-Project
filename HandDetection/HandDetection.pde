@@ -5,18 +5,37 @@ import java.awt.*;
 Capture video;
 OpenCV opencv;
 
-PImage cursor, folder;
+PImage cursorImg, folderImg;
 
-boolean isFirst = true;
 Rectangle hand = new Rectangle();
 Rectangle preHand = new Rectangle(0, 0, 0, 0);
 
 int cursorX = 960, cursorY = 240;
 int folderBaseX = 660, folderBaseY = 20;
-int nameBaseX = 680, nameBaseY = 75;
+int nameBaseX = 705, nameBaseY = 120;
 
-boolean[][] folderStates = new boolean[9][6];
-String[][] names = new String[9][6];
+ArrayList<Folder> folders = new ArrayList();
+
+public class Folder {
+  
+  public String folderName;
+  public Rectangle folderRect;
+  
+  public Folder(String folderName, Rectangle folderRect) {
+    this.folderName = folderName;
+    this.folderRect = folderRect;
+  }
+  
+  public void update() {
+    if (folderRect.contains(mouseX, mouseY)) tint(0, 153, 204, 126);
+  }
+  
+  public void draw() {
+    image(folderImg, folderRect.x, folderRect.y, folderRect.width, folderRect.height);
+    text(folderName, folderRect.x+45, folderRect.y+100);
+    noTint();
+  }
+}
 
 void setup() {
   size(1280, 480);
@@ -24,18 +43,15 @@ void setup() {
   opencv = new OpenCV(this, 640, 480);
   opencv.loadCascade("aGest.xml");
   
-  cursor = loadImage("cursor.png");
-  folder = loadImage("folder.png");
+  textSize(10);  
+  textAlign(CENTER);
+  
+  cursorImg = loadImage("cursor.png");
+  folderImg = loadImage("folder.png");
   
   //Initialize
-  folderStates[0][0] = true;
-  names[0][0] = "folder_0";
-  folderStates[1][0] = true;
-  names[1][0] = "Copy of folder_0";
-  folderStates[2][0] = true;
-  names[2][0] = "folder_2";
-  folderStates[3][0] = true;
-  names[3][0] = "folder_3";
+  Folder folder = new Folder("Hello World", new Rectangle(1000, 200, 96, 96));
+  folders.add(folder);
 
   video.start();
 }
@@ -93,25 +109,13 @@ void draw() {
   }
   
   
+  for (Folder folder:folders) {
+    folder.update();
+    folder.draw();
+  }
   
   
-  //tint(0, 153, 204, 126);
-  
-  textSize(10);  
-  textAlign(CENTER);
-  for (int i = 0; i < 9; i++)
-    for (int j = 0; j < 6; j++) {
-      if (folderStates[i][j]) {
-        Rectangle currentFolder = new Rectangle(folderBaseX + 70 * i, folderBaseY + 70 * j, 48, 48);
-        if (currentFolder.contains(cursorX, cursorY))
-          tint(0, 153, 204, 126);
-        image(folder, folderBaseX + 70 * i, folderBaseY + 70 * j);
-        text(names[i][j], nameBaseX + 70 * i, nameBaseY + 70 * j);
-        noTint();
-      }
-    }
-    
-  image(cursor, cursorX, cursorY);
+  //image(cursorImg, cursorX, cursorY);
   
 }
 
