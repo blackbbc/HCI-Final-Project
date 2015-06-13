@@ -18,8 +18,13 @@ ArrayList<Folder> folders = new ArrayList();
 
 public class Folder {
   
+  public boolean locked = false;
+  public boolean overFolder = false;
   public String folderName;
   public Rectangle folderRect;
+  
+  public int xOffset;
+  public int yOffset;
   
   public Folder(String folderName, Rectangle folderRect) {
     this.folderName = folderName;
@@ -27,7 +32,34 @@ public class Folder {
   }
   
   public void update() {
-    if (folderRect.contains(mouseX, mouseY)) tint(0, 153, 204, 126);
+    
+    if (folderRect.contains(mouseX, mouseY)) {
+      overFolder = true;
+      tint(0, 153, 204, 126);
+    } else {
+      overFolder = false;
+    }
+  }
+  
+  public void updatePressed() {
+    if (overFolder) {
+      locked = true;
+    } else {
+      locked = false;
+    }
+    xOffset = mouseX - folderRect.x;
+    yOffset = mouseY - folderRect.y;
+  }
+  
+  public void updateDragged() {
+    if (locked) {
+      folderRect.x = mouseX - xOffset;
+      folderRect.y = mouseY - yOffset;
+    }
+  }
+  
+  public void updateReleased() {
+    locked = false;
   }
   
   public void draw() {
@@ -72,6 +104,7 @@ void draw() {
   //println(faces.length);
   
 
+  //detect hand
   float area = 0f;
   hand = null;
 
@@ -100,7 +133,6 @@ void draw() {
       if (cursorY > 460) cursorY = 460;
     }
     
-    
     println(dx);
     println(dy);
     println();
@@ -108,15 +140,27 @@ void draw() {
     preHand = hand;
   }
   
-  
   for (Folder folder:folders) {
     folder.update();
     folder.draw();
   }
   
-  
   //image(cursorImg, cursorX, cursorY);
   
+}
+
+void keyPressed() {
+  if (key == 'm')
+    for (Folder folder:folders) folder.updatePressed();
+}
+
+void keyReleased() {
+  if (key == 'm')
+    for (Folder folder:folders) folder.updateReleased();
+}
+
+void mouseMoved() {
+  for (Folder folder:folders) folder.updateDragged();
 }
 
 void captureEvent(Capture c) {
