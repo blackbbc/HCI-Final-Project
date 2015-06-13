@@ -22,6 +22,8 @@ int folderIndex = 5;
 
 ArrayList<Folder> folders = new ArrayList();
 
+boolean mouseLocked = false;
+
 public class Folder {
   
   public boolean locked = false;
@@ -59,8 +61,13 @@ public class Folder {
   
   public void updatePressed() {
     if (overFolder) {
-      locked = true;
+      if (!mouseLocked) {
+        locked = true;
+        mouseLocked = true;
+      }
     } else {
+      if (locked)
+        mouseLocked = false;
       locked = false;
     }
     xOffset = mouseX - folderRect.x;
@@ -76,6 +83,7 @@ public class Folder {
   
   public void updateReleased() {
     locked = false;
+    mouseLocked = false;
   }
   
   public void draw() {
