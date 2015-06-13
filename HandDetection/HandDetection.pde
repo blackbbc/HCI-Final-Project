@@ -106,12 +106,6 @@ void setup() {
   folder = new Folder("Folder_4", new Rectangle(920, 20, 96, 96));
   folders.add(folder);
   
-//  Rectangle rect1 = new Rectangle(650, 20, 96, 96);
-//  Rectangle rect2 = new Rectangle(830, 20, 96, 96);
-//  if (rect1.intersects(rect2))
-//    println("YES");
-//  else
-//    println("NO");
   
   video.start();
 }
@@ -178,9 +172,12 @@ void draw() {
 }
 
 void keyPressed() {
+  
+  //Move
   if (key == 'm')
     for (Folder folder:folders) folder.updatePressed();
     
+  //Create
   if (key == 'n') {
     for (int j = 0; j < 4; j++)
       for (int i = 0; i < 7; i++) {
@@ -189,11 +186,11 @@ void keyPressed() {
         boolean isIntersects = false;
         for (Folder folder:folders)
           if (newFolder.getCollisionRect().intersects(folder.getCollisionRect())) {
-            println();
-            println(tempRect.x);
-            println(tempRect.y);
-            println(folder.getCollisionRect().x);
-            println(folder.getCollisionRect().y);
+            //println();
+            //println(tempRect.x);
+            //println(tempRect.y);
+            //println(folder.getCollisionRect().x);
+            //println(folder.getCollisionRect().y);
             isIntersects = true;
             break;
           }
@@ -207,10 +204,13 @@ void keyPressed() {
     println("Create folder failed!");
   }
   
+  //Copy
   if (key == 'c') {
     
     
   }
+  
+  //Delete
   if (key == 'd') {
     for (int i = folders.size() - 1; i >= 0; i--) {
       if (folders.get(i).overFolder)
