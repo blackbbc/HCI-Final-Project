@@ -16,7 +16,7 @@ int nameBaseX = 705, nameBaseY = 120;
 
 int imgWidth = 96, imgHeight = 96, collisionWidth = 60, collisionHeight = 80;
 
-int folderIndex = 3;
+int folderIndex = 5;
 
 ArrayList<Folder> folders = new ArrayList();
 
@@ -32,7 +32,6 @@ public class Folder {
   public int yOffset;
   
   public Folder(Rectangle folderRect) {
-    folderIndex++;
     this.folderName = "Folder_" + folderIndex;
     this.folderRect = folderRect;
   }
@@ -171,6 +170,40 @@ void draw() {
   
 }
 
+void createFolder(String folderName) {
+  for (int j = 0; j < 4; j++)
+    for (int i = 0; i < 7; i++) {
+      Rectangle tempRect = new Rectangle(650+90*i, 20+110*j, 96, 96);
+      
+      Folder newFolder;
+      if (folderName.equals(""))
+        newFolder = new Folder(tempRect);
+      else
+        newFolder = new Folder(folderName, tempRect);
+
+      boolean isIntersects = false;
+      for (Folder folder:folders)
+        if (newFolder.getCollisionRect().intersects(folder.getCollisionRect())) {
+          //println();
+          //println(tempRect.x);
+          //println(tempRect.y);
+          //println(folder.getCollisionRect().x);
+          //println(folder.getCollisionRect().y);
+          isIntersects = true;
+          break;
+        }
+        
+      if (!isIntersects) {
+        if (folderName.equals(""))
+          folderIndex++;
+        folders.add(newFolder);
+        return;
+      }
+    }
+    
+  println("Create folder failed!");
+}
+
 void keyPressed() {
   
   //Move
@@ -179,29 +212,7 @@ void keyPressed() {
     
   //Create
   if (key == 'n') {
-    for (int j = 0; j < 4; j++)
-      for (int i = 0; i < 7; i++) {
-        Rectangle tempRect = new Rectangle(650+90*i, 20+110*j, 96, 96);
-        Folder newFolder = new Folder(tempRect);
-        boolean isIntersects = false;
-        for (Folder folder:folders)
-          if (newFolder.getCollisionRect().intersects(folder.getCollisionRect())) {
-            //println();
-            //println(tempRect.x);
-            //println(tempRect.y);
-            //println(folder.getCollisionRect().x);
-            //println(folder.getCollisionRect().y);
-            isIntersects = true;
-            break;
-          }
-          
-        if (!isIntersects) {
-          folders.add(newFolder);
-          return;
-        }
-      }
-      
-    println("Create folder failed!");
+    createFolder("");
   }
   
   //Copy
