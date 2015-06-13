@@ -14,6 +14,10 @@ int cursorX = 960, cursorY = 240;
 int folderBaseX = 660, folderBaseY = 20;
 int nameBaseX = 705, nameBaseY = 120;
 
+int imgWidth = 96, imgHeight = 96, collisionWidth = 60, collisionHeight = 80;
+
+int folderIndex = 3;
+
 ArrayList<Folder> folders = new ArrayList();
 
 public class Folder {
@@ -22,13 +26,24 @@ public class Folder {
   public boolean overFolder = false;
   public String folderName;
   public Rectangle folderRect;
+  public Rectangle collisionRect;
   
   public int xOffset;
   public int yOffset;
   
+  public Folder(Rectangle folderRect) {
+    folderIndex++;
+    this.folderName = "Folder_" + folderIndex;
+    this.folderRect = folderRect;
+  }
+  
   public Folder(String folderName, Rectangle folderRect) {
     this.folderName = folderName;
     this.folderRect = folderRect;
+  }
+  
+  public Rectangle getCollisionRect() {
+    return new Rectangle(folderRect.x, folderRect.y, collisionWidth, collisionHeight);
   }
   
   public void update() {
@@ -82,9 +97,22 @@ void setup() {
   folderImg = loadImage("folder.png");
   
   //Initialize
-  Folder folder = new Folder("Hello World", new Rectangle(1000, 200, 96, 96));
+  Folder folder = new Folder("Folder_1", new Rectangle(650, 20, 96, 96));
   folders.add(folder);
-
+  folder = new Folder("Folder_2", new Rectangle(740, 20, 96, 96));
+  folders.add(folder);
+  folder = new Folder("Folder_3", new Rectangle(830, 20, 96, 96));
+  folders.add(folder);
+  folder = new Folder("Folder_4", new Rectangle(920, 20, 96, 96));
+  folders.add(folder);
+  
+//  Rectangle rect1 = new Rectangle(650, 20, 96, 96);
+//  Rectangle rect2 = new Rectangle(830, 20, 96, 96);
+//  if (rect1.intersects(rect2))
+//    println("YES");
+//  else
+//    println("NO");
+  
   video.start();
 }
 
@@ -133,9 +161,9 @@ void draw() {
       if (cursorY > 460) cursorY = 460;
     }
     
-    println(dx);
-    println(dy);
-    println();
+    //println(dx);
+    //println(dy);
+    //println();
     
     preHand = hand;
   }
@@ -152,9 +180,33 @@ void draw() {
 void keyPressed() {
   if (key == 'm')
     for (Folder folder:folders) folder.updatePressed();
-  if (key == 'n') {
     
+  if (key == 'n') {
+    for (int j = 0; j < 4; j++)
+      for (int i = 0; i < 7; i++) {
+        Rectangle tempRect = new Rectangle(650+90*i, 20+110*j, 96, 96);
+        Folder newFolder = new Folder(tempRect);
+        boolean isIntersects = false;
+        for (Folder folder:folders)
+          if (newFolder.getCollisionRect().intersects(folder.getCollisionRect())) {
+            println();
+            println(tempRect.x);
+            println(tempRect.y);
+            println(folder.getCollisionRect().x);
+            println(folder.getCollisionRect().y);
+            isIntersects = true;
+            break;
+          }
+          
+        if (!isIntersects) {
+          folders.add(newFolder);
+          return;
+        }
+      }
+      
+    println("Create folder failed!");
   }
+  
   if (key == 'c') {
     
     
@@ -172,7 +224,7 @@ void keyReleased() {
     for (Folder folder:folders) folder.updateReleased();
 }
 
-//For Move
+//For Move Only
 void mouseMoved() {
   for (Folder folder:folders) folder.updateDragged();
 } 
