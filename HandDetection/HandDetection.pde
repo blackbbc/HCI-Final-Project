@@ -152,6 +152,19 @@ void draw() {
 void keyPressed() {
   if (key == 'm')
     for (Folder folder:folders) folder.updatePressed();
+  if (key == 'n') {
+    
+  }
+  if (key == 'c') {
+    
+    
+  }
+  if (key == 'd') {
+    for (int i = folders.size() - 1; i >= 0; i--) {
+      if (folders.get(i).overFolder)
+        folders.remove(i);
+    }
+  }
 }
 
 void keyReleased() {
@@ -159,9 +172,10 @@ void keyReleased() {
     for (Folder folder:folders) folder.updateReleased();
 }
 
+//For Move
 void mouseMoved() {
   for (Folder folder:folders) folder.updateDragged();
-}
+} 
 
 void captureEvent(Capture c) {
   c.read();
