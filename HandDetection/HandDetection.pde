@@ -29,8 +29,8 @@ public class Folder {
   public boolean locked = false;
   public boolean overFolder = false;
   public String folderName;
+  public Rectangle legalRect;
   public Rectangle folderRect;
-  public Rectangle collisionRect;
   
   public int xOffset;
   public int yOffset;
@@ -50,7 +50,6 @@ public class Folder {
   }
   
   public void update() {
-    
     if (folderRect.contains(mouseX, mouseY)) {
       overFolder = true;
       tint(0, 153, 204, 126);
@@ -78,12 +77,22 @@ public class Folder {
     if (locked) {
       folderRect.x = mouseX - xOffset;
       folderRect.y = mouseY - yOffset;
+      //To do: Update legalRect
+      for (Folder folder:folders)
+        if (this != folder)
+          if (this.getCollisionRect().intersects(folder.getCollisionRect()))
+            return;
+      //println("Get legal rectangle");
+      this.legalRect = new Rectangle(this.folderRect);
     }
   }
   
   public void updateReleased() {
     locked = false;
     mouseLocked = false;
+    
+    if (this.legalRect != null)
+      this.folderRect = new Rectangle(this.legalRect);
   }
   
   public void draw() {
