@@ -77,7 +77,7 @@ public class Folder {
     if (locked) {
       folderRect.x = mouseX - xOffset;
       folderRect.y = mouseY - yOffset;
-      //To do: Update legalRect
+      //Update legalRect
       for (Folder folder:folders)
         if (this != folder)
           if (this.getCollisionRect().intersects(folder.getCollisionRect()))
@@ -185,7 +185,7 @@ void draw() {
     folder.draw();
   }
   
-  //image(cursorImg, cursorX, cursorY);
+  image(cursorImg, cursorX, cursorY);
   
 }
 
@@ -224,22 +224,48 @@ void createFolder(String folderName) {
 }
 
 String solveName(String originName) {
-  if (originName.indexOf("Copy") < 0)
-    return "Copy of " + originName;
-  else {
-    //Regular Expression
-    String pattern = "\\((\\d+)\\)";
-    Pattern r = Pattern.compile(pattern);
-    Matcher m = r.matcher(originName);
-    if (m.find()) {
-      //println(m.group(1));
-      int index = Integer.parseInt(m.group(1));
-      index++;
-      return m.replaceFirst("("+index+")");
-    } else {
-      return originName + "(2)";
-    }
+  //To do
+  String folderName;
+  String regex;
+  Pattern pattern;
+  Matcher matcher;
+  int index = 0, tempIndex;
+  
+  if (originName.indexOf("Copy") < 0) {
+    folderName = originName;
+  } else {
+    regex = "Copy of ([a-zA-Z]+_\\d+)";
+    pattern = Pattern.compile(regex);
+    matcher = pattern.matcher(originName);
+    matcher.find();
+    folderName = matcher.group(1);
   }
+  
+  println(folderName);
+  
+  regex = "Copy of " + folderName + "\\((\\d+)\\)";
+  pattern = Pattern.compile(regex);
+  
+  println(regex);
+  
+  for (Folder folder:folders) {
+   matcher = pattern.matcher(folder. folderName);
+   if (folder.folderName.indexOf("Copy of "+folderName) >= 0)
+     index = 1 > index? 1: index;
+   if (matcher.find()) {
+     tempIndex = Integer.parseInt(matcher.group(1));
+   } else {
+     tempIndex = 0;
+   }
+   index = tempIndex > index? tempIndex: index;
+  }
+  
+  index ++;
+  if (index == 1)
+    return "Copy of " + folderName;
+  else
+    return "Copy of " + folderName + "(" + index + ")";
+  
 }
 
 void keyPressed() {
