@@ -51,7 +51,7 @@ public class Folder {
   }
   
   public void update() {
-    if (folderRect.contains(mouseX, mouseY)) {
+    if (folderRect.contains(cursorX, cursorY)) {
       overFolder = true;
       tint(0, 153, 204, 126);
     } else {
@@ -70,14 +70,14 @@ public class Folder {
         mouseLocked = false;
       locked = false;
     }
-    xOffset = mouseX - folderRect.x;
-    yOffset = mouseY - folderRect.y;
+    xOffset = cursorX - folderRect.x;
+    yOffset = cursorY - folderRect.y;
   }
   
   public void updateDragged() {
     if (locked) {
-      folderRect.x = mouseX - xOffset;
-      folderRect.y = mouseY - yOffset;
+      folderRect.x = cursorX - xOffset;
+      folderRect.y = cursorY - yOffset;
       //Update legalRect
       for (Folder folder:folders)
         if (this != folder)
@@ -176,15 +176,16 @@ void draw() {
       if (cursorY > 460) cursorY = 460;
     }
     
-    println(dis);
-    println(dx);
-    println(dy);
-    println();
+//    println(dis);
+//    println(dx);
+//    println(dy);
+//    println();
     
     preHand = hand;
   }
   
   for (Folder folder:folders) {
+    folder.updateDragged();
     folder.update();
     folder.draw();
   }
@@ -306,10 +307,12 @@ void keyReleased() {
     for (Folder folder:folders) folder.updateReleased();
 }
 
+//DEBUG MODE
 //For Move Only
-void mouseMoved() {
-  for (Folder folder:folders) folder.updateDragged();
-} 
+//void mouseMoved() {
+//  for (Folder folder:folders) folder.updateDragged();
+//}
+
 
 void captureEvent(Capture c) {
   c.read();
