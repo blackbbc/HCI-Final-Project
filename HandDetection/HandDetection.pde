@@ -12,6 +12,7 @@ PImage cursorImg, folderImg;
 
 Rectangle hand = new Rectangle();
 Rectangle preHand = new Rectangle(0, 0, 0, 0);
+Rectangle camera = new Rectangle(0, 0, 640, 480);
 
 int cursorX = 960, cursorY = 240;
 int folderBaseX = 660, folderBaseY = 20;
@@ -79,6 +80,13 @@ public class Folder {
       folderRect.x = cursorX - xOffset;
       folderRect.y = cursorY - yOffset;
       //Update legalRect
+      
+//      if (this.getCollisionRect().intersects(camera))
+//        return;
+        
+      if (this.getCollisionRect().x < 640 || this.getCollisionRect().x+this.getCollisionRect().width > 1280 || this.getCollisionRect().y < 0 || this.getCollisionRect().y+this.getCollisionRect().height>480)
+        return;
+      
       for (Folder folder:folders)
         if (this != folder)
           if (this.getCollisionRect().intersects(folder.getCollisionRect()))
