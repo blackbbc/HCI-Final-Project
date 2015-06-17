@@ -3,6 +3,7 @@ import processing.video.*;
 import java.awt.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.lang.*;
 
 Capture video;
 OpenCV opencv;
@@ -163,7 +164,9 @@ void draw() {
     dx = hand.x - preHand.x;
     dy = hand.y - preHand.y;
     
-    if (abs(dx) <= 20 && abs(dy) <= 20) {
+    double dis = Math.sqrt(dx*dx + dy*dy);
+    
+    if (dis >= 5.0 && dis <= 50.0) {
       cursorX += 2 * dx;
       cursorY += 2 * dy;
       
@@ -173,9 +176,10 @@ void draw() {
       if (cursorY > 460) cursorY = 460;
     }
     
-    //println(dx);
-    //println(dy);
-    //println();
+    println(dis);
+    println(dx);
+    println(dy);
+    println();
     
     preHand = hand;
   }
