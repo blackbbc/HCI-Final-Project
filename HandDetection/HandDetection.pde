@@ -254,12 +254,12 @@ String solveName(String originName) {
     folderName = matcher.group(1);
   }
   
-  println(folderName);
+  //println(folderName);
   
   regex = "Copy of " + folderName + "\\((\\d+)\\)";
   pattern = Pattern.compile(regex);
   
-  println(regex);
+  //println(regex);
   
   for (Folder folder:folders) {
    matcher = pattern.matcher(folder. folderName);
